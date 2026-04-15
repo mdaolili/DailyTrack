@@ -1,0 +1,45 @@
+.todo-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 12rpx 0;
+}
+
+.check {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 22rpx;
+  border: 2rpx solid #D1D5DC;
+  text-align: center;
+  line-height: 40rpx;
+}
+
+.checked {
+  border-color: #155DFC;
+  background: #155DFC;
+}
+
+.check-icon {
+  color: #FFFFFF;
+  font-size: 24rpx;
+}
+
+.todo-content {
+  flex: 1;
+}
+
+.todo-title {
+  font-size: 36rpx;
+  color: #101828;
+}
+
+.done {
+  color: #9AA4B5;
+  text-decoration: line-through;
+}
+
+.todo-source,
+.delete {
+  color: #99A1AF;
+  font-size: 26rpx;
+}

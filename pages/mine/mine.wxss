@@ -1,0 +1,51 @@
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.avatar {
+  width: 92rpx;
+  height: 92rpx;
+  border-radius: 46rpx;
+  background: linear-gradient(135deg, #5A7AFF, #8B66FF);
+  color: #FFFFFF;
+  text-align: center;
+  line-height: 92rpx;
+  font-weight: 600;
+}
+
+.name {
+  display: block;
+  font-size: 34rpx;
+  font-weight: 600;
+}
+
+.desc {
+  color: #7E8AA0;
+  font-size: 24rpx;
+}
+
+.menu-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 22rpx 0;
+  border-bottom: 1rpx solid #EEF2F7;
+}
+
+.menu-item:last-child {
+  border-bottom: 0;
+}
+
+.arrow,
+.version {
+  color: #8D98AC;
+}
+
+.version {
+  display: block;
+  text-align: center;
+  margin-top: 30rpx;
+  font-size: 24rpx;
+}

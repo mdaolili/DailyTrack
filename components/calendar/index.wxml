@@ -1,0 +1,30 @@
+<view class="calendar-wrap">
+  <view class="month-bar">
+    <text class="switch-btn" bindtap="onPrevMonth">‹</text>
+    <text class="month-label">{{currentMonth}}</text>
+    <text class="switch-btn" bindtap="onNextMonth">›</text>
+  </view>
+
+  <view class="week-row">
+    <text wx:for="{{['一','二','三','四','五','六','日']}}" wx:key="*this" class="week-item">{{item}}</text>
+  </view>
+
+  <view class="grid" bindtouchstart="onTouchStart" bindtouchend="onTouchEnd">
+    <view
+      wx:for="{{days}}"
+      wx:key="date"
+      class="day-cell {{item.isToday ? 'today' : ''}} {{!item.inCurrentMonth ? 'other' : ''}}"
+      data-date="{{item.date}}"
+      bindtap="onSelectDay"
+      bindlongpress="onLongPressDay"
+    >
+      <text class="day-text">{{item.day}}</text>
+      <text wx:if="{{item.dateLabel}}" class="day-label">{{item.dateLabel}}</text>
+      <view class="marks">
+        <text wx:if="{{item.hasDiary}}" class="mark-diary">✎</text>
+        <text wx:if="{{item.hasCheckin}}" class="mark-check">●</text>
+        <text wx:if="{{item.hasPending}}" class="mark-pending">•</text>
+      </view>
+    </view>
+  </view>
+</view>

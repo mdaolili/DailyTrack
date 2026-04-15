@@ -1,0 +1,7 @@
+<view class="image-list">
+  <view class="add-btn" bindtap="chooseImage">🖼 添加图片</view>
+  <view class="image-item" wx:for="{{images}}" wx:key="*this">
+    <image class="img" src="{{item}}" mode="aspectFill" data-path="{{item}}" bindtap="previewImage" />
+    <text class="remove" data-path="{{item}}" bindtap="removeImage">×</text>
+  </view>
+</view>

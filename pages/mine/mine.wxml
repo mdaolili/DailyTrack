@@ -1,0 +1,18 @@
+<view class="page">
+  <view class="card user-card">
+    <view class="avatar">时</view>
+    <view>
+      <text class="name">{{profile.nickname}}</text>
+      <text class="desc">坚持记录每一天</text>
+    </view>
+  </view>
+
+  <view class="card menu-card">
+    <view class="menu-item" wx:for="{{menus}}" wx:key="key" data-key="{{item.key}}" bindtap="handleMenuTap">
+      <text>{{item.label}}</text>
+      <text class="arrow">›</text>
+    </view>
+  </view>
+
+  <text class="version">时光记 v1.0.0</text>
+</view>

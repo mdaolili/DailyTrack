@@ -1,0 +1,51 @@
+<view class="page">
+  <view class="top-bar" style="padding-top: {{statusBarHeight}}px;">
+    <view class="top-inner">
+      <text class="top-side" bindtap="goBack">‹</text>
+      <view class="top-center">
+        <text class="date-title">{{dateTitle}}</text>
+        <text class="date-week">{{dateWeek}}</text>
+      </view>
+      <text class="top-side" bindtap="openMoreActions">⋯</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-header" bindtap="toggleTodoFold">
+      <text class="section-title">今日待办</text>
+      <text class="fold-btn">{{todoFold ? '⌄' : '⌃'}}</text>
+    </view>
+    <view wx:if="{{!todoFold}}">
+      <todo-item wx:for="{{todoList}}" wx:key="id" item="{{item}}" bind:toggle="toggleTodo" bind:remove="removeTodo" />
+      <view class="add-row">
+        <input class="task-input" value="{{newTask}}" placeholder="添加今日临时任务" bindinput="onTaskInput" />
+        <view class="add-btn" bindtap="addTempTodo">+</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card diary-card">
+    <input class="title-input" value="{{diary.title}}" placeholder="今日心情 / 日记标题" bindinput="onDiaryTitleInput" />
+    <textarea
+      class="content-input"
+      value="{{diary.content}}"
+      placeholder="记录今天发生的事情..."
+      auto-height
+      focus="{{focusDiaryEditor}}"
+      bindinput="onDiaryContentInput"
+    />
+    <view class="mood-label">今日心情</view>
+    <view class="mood-row">
+      <view wx:for="{{moods}}" wx:key="value" class="mood {{diary.mood === item.value ? 'active' : ''}}" data-value="{{item.value}}" bindtap="selectMood">
+        <text class="mood-icon">{{item.icon}}</text>
+        <text class="mood-text">{{item.value}}</text>
+      </view>
+    </view>
+    <view class="mood-label image-label">图片</view>
+    <image-picker images="{{diary.images}}" bind:change="onImageChange" />
+    <text class="save-tip">{{saveTip}}</text>
+  </view>
+
+  <view class="bottom-delete" bindtap="deleteCurrentDetail">删除当日内容</view>
+  <canvas canvas-id="exportCanvas" class="export-canvas"></canvas>
+</view>

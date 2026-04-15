@@ -1,0 +1,97 @@
+<view class="page stats-page">
+  <view class="top-header">
+    <view class="top-title">数据统计</view>
+  </view>
+
+  <view class="overview-grid">
+    <view class="card overview-card" wx:for="{{overviewCards}}" wx:key="key">
+      <view class="overview-head">
+        <view class="icon-box {{item.iconClass}}">
+          <text class="icon-text">{{item.icon}}</text>
+        </view>
+        <text class="overview-label">{{item.label}}</text>
+      </view>
+      <text class="overview-value">{{item.value}}</text>
+      <text class="overview-unit">{{item.unit}}</text>
+    </view>
+  </view>
+
+  <view class="card section-card">
+    <text class="section-title">打卡热力图（最近90天）</text>
+    <view class="heatmap-grid">
+      <view
+        wx:for="{{heatmap}}"
+        wx:key="date"
+        class="heatmap-dot heat-level-{{item.level}}"
+        data-date="{{item.date}}"
+        bindtap="goDateDetail"
+      ></view>
+    </view>
+    <view class="legend-row">
+      <text class="legend-label">少</text>
+      <view class="heatmap-dot heat-level-0 legend-dot"></view>
+      <view class="heatmap-dot heat-level-1 legend-dot"></view>
+      <view class="heatmap-dot heat-level-2 legend-dot"></view>
+      <view class="heatmap-dot heat-level-3 legend-dot"></view>
+      <text class="legend-label">多</text>
+    </view>
+  </view>
+
+  <view class="card section-card">
+    <view class="trend-head">
+      <text class="section-title">完成趋势</text>
+      <view class="trend-tabs">
+        <text
+          wx:for="{{trendTabs}}"
+          wx:key="value"
+          class="trend-tab {{trendMode === item.value ? 'active' : ''}}"
+          data-mode="{{item.value}}"
+          bindtap="switchTrendMode"
+        >{{item.label}}</text>
+      </view>
+    </view>
+    <text class="trend-caption">{{trendCaption}}</text>
+    <view class="trend-chart">
+      <view class="y-axis">
+        <text wx:for="{{yAxisLabels}}" wx:key="*this" class="y-label">{{item}}</text>
+      </view>
+      <view class="chart-panel">
+        <view class="chart-body">
+          <view class="grid-line" wx:for="{{yAxisLabels}}" wx:key="*this"></view>
+          <view class="bars-row">
+            <view class="bar-wrap" wx:for="{{weeklyTrend}}" wx:key="label">
+              <text class="bar-value">{{item.doneDays}}</text>
+              <view class="bar-track">
+                <view wx:if="{{item.doneDays > 0}}" class="bar-fill" style="height: {{item.displayHeightPercent}}%;"></view>
+                <view wx:else class="bar-empty-dot"></view>
+              </view>
+            </view>
+          </view>
+        </view>
+        <view class="x-label-row">
+          <text class="x-label" wx:for="{{weeklyTrend}}" wx:key="label">{{item.label}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card section-card rank-card">
+    <text class="section-title">目标完成排行</text>
+    <view class="rank-list" wx:if="{{rankings.length}}">
+      <view class="rank-item" wx:for="{{rankings}}" wx:key="id">
+        <view class="rank-click-mask" data-id="{{item.id}}" bindtap="goGoalDetail"></view>
+        <view class="rank-index rank-{{index + 1}}">{{index + 1}}</view>
+        <view class="rank-main">
+          <view class="rank-head">
+            <text class="rank-title">{{item.title}}</text>
+            <text class="rank-percent">{{item.percent}}%</text>
+          </view>
+          <view class="rank-progress">
+            <view class="rank-progress-inner" style="width: {{item.percent}}%;"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view wx:else class="empty-tip">暂无目标记录</view>
+  </view>
+</view>

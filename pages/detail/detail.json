@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "todo-item": "/components/todo-item/index",
+    "image-picker": "/components/image-picker/index"
+  },
+  "navigationStyle": "custom"
+}

@@ -1,0 +1,10 @@
+<view class="todo-row">
+  <view class="check {{item.done ? 'checked' : ''}}" bindtap="onToggle">
+    <text wx:if="{{item.done}}" class="check-icon">✓</text>
+  </view>
+  <view class="todo-content">
+    <text class="todo-title {{item.done ? 'done' : ''}}">{{item.content}}</text>
+  </view>
+  <text class="todo-source" wx:if="{{item.source === 'goal' || item.source === 'weekGoal'}}">来自目标</text>
+  <text class="delete" wx:if="{{item.source === '临时'}}" bindtap="onDelete">删除</text>
+</view>
