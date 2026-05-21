@@ -1,0 +1,28 @@
+<view class="page">
+  <view class="card search-card">
+    <input
+      class="search-input"
+      value="{{keyword}}"
+      placeholder="搜索日记标题或正文"
+      focus
+      bindinput="onKeywordInput"
+      confirm-type="search"
+    />
+    <text wx:if="{{keyword}}" class="clear-btn" bindtap="clearKeyword">清空</text>
+  </view>
+
+  <view class="result-tip" wx:if="{{keyword}}">
+    <text>共找到 {{resultCount}} 条记录</text>
+  </view>
+
+  <view class="card result-card" wx:for="{{results}}" wx:key="date" data-date="{{item.date}}" bindtap="goDetail">
+    <view class="result-head">
+      <text class="result-date">{{item.date}}</text>
+      <text class="result-mood" wx:if="{{item.mood}}">{{item.mood}}</text>
+    </view>
+    <text class="result-title">{{item.title || '未命名日记'}}</text>
+    <text class="result-content">{{item.preview}}</text>
+  </view>
+
+  <view class="empty-tip" wx:if="{{keyword && !results.length}}">未找到相关日记内容</view>
+</view>

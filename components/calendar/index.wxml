@@ -19,7 +19,12 @@
       bindlongpress="onLongPressDay"
     >
       <text class="day-text">{{item.day}}</text>
-      <text wx:if="{{item.dateLabel}}" class="day-label">{{item.dateLabel}}</text>
+      <text
+        wx:if="{{item.dateLabel}}"
+        class="day-label {{item.dayType === 'holiday' ? 'holiday-label' : ''}} {{item.dayType === 'workday' ? 'workday-label' : ''}}"
+      >
+        {{item.dateLabel}}
+      </text>
       <view class="marks">
         <text wx:if="{{item.hasDiary}}" class="mark-diary">✎</text>
         <text wx:if="{{item.hasCheckin}}" class="mark-check">●</text>

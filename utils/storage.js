@@ -35,6 +35,16 @@ function getDiaryByDate(date) {
   return getDiaries().find((item) => item.date === date) || null
 }
 
+/** 用于日历/统计：仅当用户真正填写过内容时视为「有日记」 */
+function isDiaryMeaningful(diary) {
+  if (!diary || typeof diary !== 'object') return false
+  if ((diary.title || '').trim()) return true
+  if ((diary.content || '').trim()) return true
+  if (Array.isArray(diary.images) && diary.images.length) return true
+  if ((diary.mood || '').trim()) return true
+  return false
+}
+
 function getGoals() {
   return getList(KEYS.GOALS)
 }
@@ -60,6 +70,7 @@ module.exports = {
   getDiaries,
   saveDiary,
   getDiaryByDate,
+  isDiaryMeaningful,
   getGoals,
   saveGoal,
   getCheckins,

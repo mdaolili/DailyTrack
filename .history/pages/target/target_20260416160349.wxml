@@ -1,0 +1,78 @@
+<view class="page">
+  <view class="tab-row">
+    <text
+      wx:for="{{tabs}}"
+      wx:key="value"
+      class="tab {{activeTab===item.value ? 'active' : ''}}"
+      data-type="{{item.value}}"
+      bindtap="switchTab"
+    >{{item.label}}</text>
+  </view>
+
+  <view class="card goal-card" wx:for="{{displayGoals}}" wx:key="id" data-id="{{item.id}}" bindtap="goGoalDetail">
+    <view class="goal-header">
+      <text class="goal-title">{{item.title}}</text>
+      <view class="goal-ops">
+        <view class="goal-icon-wrap" data-id="{{item.id}}" catchtap="openEditModal">
+          <image class="goal-icon-img" src="/images/icon/edit.png" mode="aspectFit" />
+        </view>
+        <view class="goal-icon-wrap" data-id="{{item.id}}" catchtap="removeGoal">
+          <image class="goal-icon-img" src="/images/icon/delete.png" mode="aspectFit" />
+        </view>
+      </view>
+    </view>
+    <text class="goal-desc" wx:if="{{item.description}}">{{item.description}}</text>
+    <view class="progress-row">
+      <text>完成进度</text>
+      <text class="progress-text">{{item.progressPercent}}%</text>
+    </view>
+    <view class="progress-wrap">
+      <view class="progress-inner" style="width: {{item.progressPercent}}%;"></view>
+    </view>
+    <view class="meta-col">
+      <text class="check-days">已打卡 {{item.checkDays}} 天</text>
+      <text class="date-text">{{item.startTime}} 至 {{item.endTime}}</text>
+    </view>
+  </view>
+
+  <view class="fab" bindtap="openCreateModal">+ 目标</view>
+
+  <view class="modal-mask" wx:if="{{showEditModal}}" bindtap="closeEditModal">
+    <view class="modal-panel" catchtap="noop">
+      <view class="modal-header">
+        <text class="modal-title">{{modalMode === 'create' ? '新增目标' : '编辑目标'}}</text>
+        <text class="modal-close" bindtap="closeEditModal">×</text>
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">目标标题</text>
+        <input class="form-input form-input-title" value="{{editForm.title}}" bindinput="onEditTitleInput" />
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">目标描述（可选）</text>
+        <textarea class="form-textarea" value="{{editForm.description}}" bindinput="onEditDescInput" />
+      </view>
+
+      <view class="date-row">
+        <view class="date-item">
+          <text class="form-label">开始日期</text>
+          <picker mode="date" value="{{editForm.startTime}}" bindchange="onEditStartChange">
+            <view class="form-input form-input-date">{{editForm.startTime || '请选择'}}</view>
+          </picker>
+        </view>
+        <view class="date-item">
+          <text class="form-label">结束日期</text>
+          <picker mode="date" value="{{editForm.endTime}}" bindchange="onEditEndChange">
+            <view class="form-input form-input-date">{{editForm.endTime || '请选择'}}</view>
+          </picker>
+        </view>
+      </view>
+
+      <view class="modal-actions">
+        <view class="btn btn-ghost" bindtap="closeEditModal">取消</view>
+        <view class="btn btn-primary" bindtap="submitGoalForm">{{modalMode === 'create' ? '新增' : '更新'}}</view>
+      </view>
+    </view>
+  </view>
+</view>

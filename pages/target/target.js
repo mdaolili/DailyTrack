@@ -86,6 +86,12 @@ Page({
     this.setData({ activeTab: event.currentTarget.dataset.type }, () => this.updateDisplayGoals())
   },
 
+  goGoalDetail(event) {
+    const { id } = event.currentTarget.dataset
+    if (!id) return
+    wx.navigateTo({ url: `/pages/goal-detail/goal-detail?id=${id}` })
+  },
+
   openCreateModal() {
     const type = this.data.activeTab
     const startTime = formatDate(new Date())
@@ -111,57 +117,6 @@ Page({
     const goals = this.data.goals.filter((item) => item.id !== id)
     wx.setStorageSync('goals', goals)
     this.setData({ goals }, () => this.updateDisplayGoals())
-  },
-
-  completeGoal(event) {
-    const { id } = event.currentTarget.dataset
-    const nextGoals = this.data.goals.map((item) => {
-      if (item.id !== id) return item
-      return { ...item, isCompleted: true, progress: 1 }
-    })
-    wx.setStorageSync('goals', nextGoals)
-    this.setData({ goals: nextGoals }, () => this.updateDisplayGoals())
-    wx.showToast({ title: '目标已完成', icon: 'success' })
-  },
-
-  decomposeGoal(event) {
-    const { id } = event.currentTarget.dataset
-    const goal = this.data.goals.find((item) => item.id === id)
-    if (!goal) return
-    const childTypeMap = { year: 'month', month: 'week', week: '' }
-    const childType = childTypeMap[goal.type]
-    if (!childType) {
-      const nextGoals = this.data.goals.map((item) => {
-        if (item.id !== goal.id) return item
-        const todoList = createDailyTodos(item.startTime, item.endTime, item.title, item.id)
-        return {
-          ...item,
-          todoList
-        }
-      })
-      wx.setStorageSync('goals', nextGoals)
-      this.setData({ goals: nextGoals }, () => this.updateDisplayGoals())
-      wx.showToast({ title: '已拆解为每日待办', icon: 'success' })
-      return
-    }
-    const childId = `${Date.now()}`
-    const childGoal = {
-      id: childId,
-      type: childType,
-      title: `${goal.title}-拆解`,
-      description: `由「${goal.title}」自动拆解生成`,
-      startTime: goal.startTime,
-      endTime: goal.endTime,
-      progress: 0,
-      checkList: [],
-      todoList: childType === 'week' ? createDailyTodos(goal.startTime, goal.endTime, goal.title, childId) : [],
-      parentId: goal.id,
-      isCompleted: false
-    }
-    const nextGoals = [...this.data.goals, childGoal]
-    wx.setStorageSync('goals', nextGoals)
-    this.setData({ goals: nextGoals, activeTab: childType }, () => this.updateDisplayGoals())
-    wx.showToast({ title: '已拆解为下级目标', icon: 'success' })
   },
 
   openEditModal(event) {

@@ -1,7 +1,9 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/search/search",
     "pages/detail/detail",
+    "pages/goal-detail/goal-detail",
     "pages/target/target",
     "pages/stats/stats",
     "pages/mine/mine"

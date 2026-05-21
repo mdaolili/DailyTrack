@@ -1,0 +1,54 @@
+.image-list {
+  display: flex;
+  gap: 12rpx;
+  overflow-x: auto;
+  padding-bottom: 2rpx;
+}
+
+.add-btn,
+.image-item {
+  width: 128rpx;
+  height: 128rpx;
+  border-radius: 18rpx;
+  flex-shrink: 0;
+}
+
+.add-btn {
+  border: 2rpx dashed #D1D5DC;
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 128rpx;
+  height: 128rpx;
+  border-radius: 18rpx;
+  overflow: hidden;
+}
+
+.add-icon {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.image-item {
+  position: relative;
+}
+
+.img {
+  width: 100%;
+  height: 100%;
+  border-radius: 18rpx;
+}
+
+.remove {
+  position: absolute;
+  top: -8rpx;
+  right: -8rpx;
+  width: 34rpx;
+  height: 34rpx;
+  border-radius: 17rpx;
+  background: rgba(30, 36, 48, 0.75);
+  color: #FFFFFF;
+  text-align: center;
+  line-height: 34rpx;
+}

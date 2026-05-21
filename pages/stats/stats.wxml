@@ -7,12 +7,27 @@
     <view class="card overview-card" wx:for="{{overviewCards}}" wx:key="key">
       <view class="overview-head">
         <view class="icon-box {{item.iconClass}}">
-          <text class="icon-text">{{item.icon}}</text>
+          <image class="icon-img" src="{{item.iconPath}}" mode="aspectFit" />
         </view>
         <text class="overview-label">{{item.label}}</text>
       </view>
       <text class="overview-value">{{item.value}}</text>
       <text class="overview-unit">{{item.unit}}</text>
+    </view>
+  </view>
+
+  <view class="card section-card">
+    <text class="section-title">目标完成率环形图</text>
+    <view class="goal-ring-wrap">
+      <view class="goal-ring">
+        <view class="ring-center">
+          <text class="goal-ring-percent">{{stats.goalCompletionRate}}%</text>
+          <text class="goal-ring-label">平均完成率</text>
+        </view>
+      </view>
+    </view>
+    <view class="goal-rate-track">
+      <view class="goal-rate-fill" style="width: {{stats.goalCompletionRate}}%;"></view>
     </view>
   </view>
 
@@ -37,7 +52,7 @@
     </view>
   </view>
 
-  <view class="card section-card">
+  <view class="card section-card" bindtouchstart="onTrendTouchStart" bindtouchend="onTrendTouchEnd">
     <view class="trend-head">
       <text class="section-title">完成趋势</text>
       <view class="trend-tabs">

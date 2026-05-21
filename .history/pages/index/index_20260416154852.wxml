@@ -1,0 +1,32 @@
+<view class="page">
+  <view class="header">
+    <text class="title">日历日记</text>
+    <view class="header-actions">
+      <text class="icon-btn">⌕</text>
+      <text class="icon-btn" bindtap="goMine">⚙</text>
+    </view>
+  </view>
+
+  <calendar-view
+    currentMonth="{{currentMonth}}"
+    days="{{calendarDays}}"
+    bind:changemonth="handleChangeMonth"
+    bind:selectday="handleSelectDay"
+    bind:longpressday="handleLongPressDay"
+  />
+
+  <view class="card preview-card" bindtap="goTodayDetail">
+    <view class="preview-row">
+      <text class="preview-title">今日 · {{todayMMDD}}</text>
+    </view>
+    <view class="preview-bottom">
+      <view class="todo-preview">
+        <text class="todo-circle {{todayHasDone ? 'checked' : ''}}">◯</text>
+        <text class="preview-text">今日待办 {{todayTodoCount}} 项</text>
+      </view>
+      <text class="preview-text">✎ {{todayDiaryText}}</text>
+    </view>
+  </view>
+
+  <view class="fab" bindtap="goTodayDetail">+</view>
+</view>

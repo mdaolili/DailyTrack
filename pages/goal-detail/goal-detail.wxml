@@ -1,0 +1,47 @@
+<view class="page">
+  <view class="card summary-card" wx:if="{{goal}}">
+    <view class="type-tag">{{typeLabel}}</view>
+    <view class="goal-title">{{goal.title}}</view>
+    <view class="goal-desc" wx:if="{{goal.description}}">{{goal.description}}</view>
+
+    <view class="ring-wrap">
+      <view class="ring">
+        <text class="ring-percent">{{progressPercent}}%</text>
+        <text class="ring-label">完成度</text>
+      </view>
+    </view>
+
+    <view class="stats-row">
+      <view class="stats-item">
+        <text class="stats-value">{{checkDays}}</text>
+        <text class="stats-label">已打卡天数</text>
+      </view>
+      <view class="stats-item">
+        <text class="stats-value">{{totalDays}}</text>
+        <text class="stats-label">总天数</text>
+      </view>
+    </view>
+
+    <view class="date-row">
+      <text class="date-text">开始：{{goal.startTime}}</text>
+      <text class="date-text">结束：{{goal.endTime}}</text>
+    </view>
+  </view>
+
+  <view class="card calendar-card" wx:if="{{monthDays.length}}">
+    <view class="calendar-head">
+      <text class="calendar-title">打卡日历</text>
+      <text class="calendar-month">{{monthLabel}}</text>
+    </view>
+    <view class="week-row">
+      <text wx:for="{{weekLabels}}" wx:key="*this" class="week-item">{{item}}</text>
+    </view>
+    <view class="month-grid">
+      <view wx:for="{{monthDays}}" wx:key="date" class="day-cell {{item.inMonth ? '' : 'other'}} {{item.done ? 'done' : ''}}">
+        <text>{{item.day}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{!goal}}" class="empty-tip">目标不存在或已删除</view>
+</view>

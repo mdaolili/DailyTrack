@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "calendar-view": "/components/calendar/index"
+  },
+  "navigationStyle": "custom"
+}

@@ -19,6 +19,6 @@ page {
 
 .section-title {
   font-size: 32rpx;
-  font-weight: 600;
+  font-weight: 500;
   color: #1E2430;
 }

@@ -1,0 +1,158 @@
+.summary-card,
+.calendar-card {
+  border-radius: 30rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+}
+
+.type-tag {
+  display: inline-block;
+  padding: 8rpx 16rpx;
+  border-radius: 999rpx;
+  background: #EAF2FF;
+  color: #2563EB;
+  font-size: 24rpx;
+  margin-bottom: 14rpx;
+}
+
+.goal-title {
+  font-size: 36rpx;
+  font-weight: 500;
+  color: #0F172A;
+}
+
+.goal-desc {
+  margin-top: 10rpx;
+  color: #475569;
+  font-size: 30rpx;
+}
+
+.ring-wrap {
+  margin: 30rpx 0;
+  display: flex;
+  justify-content: center;
+}
+
+.ring {
+  width: 220rpx;
+  height: 220rpx;
+  border-radius: 50%;
+  border: 12rpx solid #E5E7EB;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.ring-percent {
+  font-size: 56rpx;
+  line-height: 1;
+  color: #0F172A;
+  font-weight: 500;
+}
+
+.ring-label {
+  margin-top: 6rpx;
+  color: #6B7280;
+  font-size: 28rpx;
+}
+
+.stats-row {
+  display: flex;
+  border-top: 1rpx solid #E5E7EB;
+  border-bottom: 1rpx solid #E5E7EB;
+  padding: 24rpx 0;
+}
+
+.stats-item {
+  flex: 1;
+  text-align: center;
+}
+
+.stats-value {
+  display: block;
+  font-size: 48rpx;
+  color: #0F172A;
+  font-weight: 500;
+}
+
+.stats-label {
+  color: #6B7280;
+  font-size: 28rpx;
+}
+
+.date-row {
+  margin-top: 24rpx;
+  display: flex;
+  justify-content: space-between;
+}
+
+.date-text {
+  color: #475569;
+  font-size: 30rpx;
+}
+
+.calendar-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.calendar-title {
+  font-size: 38rpx;
+  color: #0F172A;
+  font-weight: 500;
+}
+
+.calendar-month {
+  color: #6B7280;
+  font-size: 26rpx;
+}
+
+.week-row {
+  margin-top: 22rpx;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 12rpx;
+}
+
+.week-item {
+  text-align: center;
+  color: #94A3B8;
+  font-size: 24rpx;
+}
+
+.month-grid {
+  margin-top: 12rpx;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 12rpx;
+}
+
+.day-cell {
+  height: 68rpx;
+  border-radius: 14rpx;
+  background: #F3F4F6;
+  color: #94A3B8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28rpx;
+}
+
+.day-cell.other {
+  opacity: 0.45;
+}
+
+.day-cell.done {
+  background: #DBEAFE;
+  color: #1D4ED8;
+  font-weight: 500;
+}
+
+.empty-tip {
+  margin-top: 80rpx;
+  text-align: center;
+  color: #9CA3AF;
+  font-size: 30rpx;
+}

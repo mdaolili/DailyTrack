@@ -16,12 +16,12 @@ Page({
     newTask: '',
     diary: { date: '', title: '', content: '', images: [], mood: '' },
     moods: [
-      { value: '开心', icon: '☺' },
-      { value: '平静', icon: '😐' },
-      { value: '疲惫', icon: '☹' },
-      { value: '努力', icon: '⚡' },
-      { value: '焦虑', icon: '😣' },
-      { value: '兴奋', icon: '🤩' }
+      { value: '开心', icon: '/images/icon/mood-happy.png', isImage: true },
+      { value: '平静', icon: '/images/icon/mood-calm.png', isImage: true },
+      { value: '疲惫', icon: '/images/icon/mood-tired.png', isImage: true },
+      { value: '努力', icon: '/images/icon/mood-effort.png', isImage: true },
+      { value: '焦虑', icon: '/images/icon/mood-anxious.png', isImage: true },
+      { value: '兴奋', icon: '/images/icon/mood-excited.png', isImage: true }
     ],
     saveTip: '自动保存已开启',
     focusDiaryEditor: false
@@ -35,12 +35,11 @@ Page({
     const weekMap = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
     const dateObj = new Date(date)
     this.initialLoadDone = false
-    this.loadPageData(date, options)
     this.setData({
       statusBarHeight: systemInfo.statusBarHeight || 20,
       dateTitle: `${dateObj.getFullYear()}年${`${dateObj.getMonth() + 1}`.padStart(2, '0')}月${`${dateObj.getDate()}`.padStart(2, '0')}日`,
       dateWeek: weekMap[dateObj.getDay()]
-    })
+    }, () => this.ensureDiaryAccess(() => this.loadPageData(date, options)))
   },
 
   onShow() {
@@ -62,6 +61,14 @@ Page({
     const nextTodoList = shouldQuickCheckin && todoList.length
       ? todoList.map((item, index) => (index === 0 ? { ...item, done: true } : item))
       : todoList
+    // 快速打卡与手动点选待办一致：必须把完成状态写回 goals，否则统计/目标页进度与打卡记录脱节
+    if (shouldQuickCheckin && nextTodoList.length) {
+      const first = nextTodoList[0]
+      if (first.done) {
+        if (first.source === 'goal') this.syncGoalCheckState(first.id, date, true)
+        if (first.source === 'weekGoal') this.syncWeekGoalTodoState(first.goalId, first.id, true)
+      }
+    }
     this.setData({
       date,
       diary,
@@ -143,149 +150,6 @@ Page({
 
   goBack() {
     wx.navigateBack()
-  },
-
-  openMoreActions() {
-    wx.showActionSheet({
-      itemList: ['分享', '导出图片', '删除当日内容'],
-      itemColor: '#111827',
-      success: (res) => {
-        if (res.tapIndex === 0) {
-          wx.showShareMenu({ withShareTicket: true })
-          wx.showToast({ title: '已打开分享', icon: 'none' })
-          return
-        }
-        if (res.tapIndex === 1) {
-          this.exportDiaryImage()
-          return
-        }
-        if (res.tapIndex === 2) {
-          this.deleteCurrentDetail()
-        }
-      }
-    })
-  },
-
-  exportDiaryImage() {
-    const { date, diary, todoList } = this.data
-    wx.showLoading({ title: '正在导出' })
-    const systemInfo = wx.getSystemInfoSync()
-    const pxPerRpx = systemInfo.windowWidth / 750
-    const canvasWidth = Math.floor(690 * pxPerRpx)
-    const canvasHeight = Math.floor(1080 * pxPerRpx)
-    const padding = Math.floor(40 * pxPerRpx)
-    const lineHeight = Math.floor(42 * pxPerRpx)
-    const contentWidth = canvasWidth - padding * 2
-    const doneCount = todoList.filter((item) => item.done).length
-    const title = diary.title || '今日日记'
-    const moodText = diary.mood || '未选择'
-    const content = diary.content || '今天还没有记录正文内容。'
-
-    const ctx = wx.createCanvasContext('exportCanvas', this)
-    ctx.setFillStyle('#F8FAFC')
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight)
-
-    ctx.setFillStyle('#FFFFFF')
-    ctx.fillRect(Math.floor(16 * pxPerRpx), Math.floor(16 * pxPerRpx), canvasWidth - Math.floor(32 * pxPerRpx), canvasHeight - Math.floor(32 * pxPerRpx))
-
-    let cursorY = padding + Math.floor(10 * pxPerRpx)
-
-    ctx.setFillStyle('#111827')
-    ctx.setFontSize(Math.floor(34 * pxPerRpx))
-    ctx.fillText('时光记 · 日记导出', padding, cursorY)
-    cursorY += Math.floor(56 * pxPerRpx)
-
-    ctx.setFillStyle('#334155')
-    ctx.setFontSize(Math.floor(24 * pxPerRpx))
-    ctx.fillText(`日期：${date}`, padding, cursorY)
-    cursorY += Math.floor(40 * pxPerRpx)
-    ctx.fillText(`心情：${moodText}`, padding, cursorY)
-    cursorY += Math.floor(40 * pxPerRpx)
-    ctx.fillText(`待办完成：${doneCount}/${todoList.length}`, padding, cursorY)
-    cursorY += Math.floor(52 * pxPerRpx)
-
-    ctx.setFillStyle('#0F172A')
-    ctx.setFontSize(Math.floor(30 * pxPerRpx))
-    ctx.fillText(title, padding, cursorY)
-    cursorY += Math.floor(48 * pxPerRpx)
-
-    ctx.setStrokeStyle('#E2E8F0')
-    ctx.strokeRect(padding, cursorY - Math.floor(32 * pxPerRpx), contentWidth, Math.floor(2 * pxPerRpx))
-    cursorY += Math.floor(16 * pxPerRpx)
-
-    ctx.setFillStyle('#1F2937')
-    ctx.setFontSize(Math.floor(24 * pxPerRpx))
-    const lines = this.wrapCanvasText(content, contentWidth, ctx)
-    lines.forEach((line) => {
-      ctx.fillText(line, padding, cursorY)
-      cursorY += lineHeight
-    })
-
-    cursorY += Math.floor(20 * pxPerRpx)
-    ctx.setFillStyle('#64748B')
-    ctx.setFontSize(Math.floor(20 * pxPerRpx))
-    ctx.fillText(`导出时间：${new Date().toLocaleString()}`, padding, cursorY)
-
-    ctx.draw(false, () => {
-      wx.canvasToTempFilePath({
-        canvasId: 'exportCanvas',
-        width: canvasWidth,
-        height: canvasHeight,
-        destWidth: canvasWidth * 2,
-        destHeight: canvasHeight * 2,
-        success: (res) => {
-          wx.saveImageToPhotosAlbum({
-            filePath: res.tempFilePath,
-            success: () => {
-              wx.hideLoading()
-              wx.showToast({ title: '已保存到相册', icon: 'success' })
-            },
-            fail: () => {
-              wx.hideLoading()
-              wx.showModal({
-                title: '保存失败',
-                content: '需要相册权限才能保存图片，请在设置中授权后重试。',
-                confirmText: '去设置',
-                success: (modalRes) => {
-                  if (modalRes.confirm) {
-                    wx.openSetting()
-                  }
-                }
-              })
-            }
-          })
-        },
-        fail: () => {
-          wx.hideLoading()
-          wx.showToast({ title: '导出失败，请重试', icon: 'none' })
-        }
-      }, this)
-    })
-  },
-
-  wrapCanvasText(text, maxWidth, ctx) {
-    const lines = []
-    const paragraphs = `${text}`.split('\n')
-    paragraphs.forEach((paragraph) => {
-      if (!paragraph) {
-        lines.push('')
-        return
-      }
-      let currentLine = ''
-      for (let i = 0; i < paragraph.length; i += 1) {
-        const char = paragraph[i]
-        const testLine = `${currentLine}${char}`
-        const metrics = ctx.measureText(testLine)
-        if (metrics.width > maxWidth && currentLine) {
-          lines.push(currentLine)
-          currentLine = char
-        } else {
-          currentLine = testLine
-        }
-      }
-      if (currentLine) lines.push(currentLine)
-    })
-    return lines.slice(0, 28)
   },
 
   deleteCurrentDetail() {
@@ -429,5 +293,30 @@ Page({
     const oneDay = 24 * 60 * 60 * 1000
     const totalDays = Math.max(1, Math.floor((end - start) / oneDay) + 1)
     return Math.min(1, (checkList || []).length / totalDays)
+  },
+
+  ensureDiaryAccess(successCallback) {
+    const settings = wx.getStorageSync('settings') || {}
+    if (!settings.diaryLockEnabled) {
+      successCallback()
+      return
+    }
+    wx.showModal({
+      title: '请输入日记密码',
+      editable: true,
+      placeholderText: '输入密码后查看详情',
+      success: (res) => {
+        if (!res.confirm) {
+          wx.navigateBack()
+          return
+        }
+        if ((res.content || '') !== (settings.diaryPassword || '')) {
+          wx.showToast({ title: '密码错误', icon: 'none' })
+          setTimeout(() => wx.navigateBack(), 350)
+          return
+        }
+        successCallback()
+      }
+    })
   }
 })

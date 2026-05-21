@@ -6,7 +6,7 @@
         <text class="date-title">{{dateTitle}}</text>
         <text class="date-week">{{dateWeek}}</text>
       </view>
-      <text class="top-side" bindtap="openMoreActions">⋯</text>
+      <view class="top-side top-side-placeholder"></view>
     </view>
   </view>
 
@@ -37,15 +37,17 @@
     <view class="mood-label">今日心情</view>
     <view class="mood-row">
       <view wx:for="{{moods}}" wx:key="value" class="mood {{diary.mood === item.value ? 'active' : ''}}" data-value="{{item.value}}" bindtap="selectMood">
-        <text class="mood-icon">{{item.icon}}</text>
+        <image wx:if="{{item.isImage}}" class="mood-icon-image" src="{{item.icon}}" mode="aspectFit" />
+        <text wx:else class="mood-icon">{{item.icon}}</text>
         <text class="mood-text">{{item.value}}</text>
       </view>
     </view>
     <view class="mood-label image-label">图片</view>
-    <image-picker images="{{diary.images}}" bind:change="onImageChange" />
+    <view class="image-picker-wrap">
+      <image-picker images="{{diary.images}}" bind:change="onImageChange" />
+    </view>
     <text class="save-tip">{{saveTip}}</text>
   </view>
 
   <view class="bottom-delete" bindtap="deleteCurrentDetail">删除当日内容</view>
-  <canvas canvas-id="exportCanvas" class="export-canvas"></canvas>
 </view>

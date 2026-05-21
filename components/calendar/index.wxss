@@ -20,8 +20,8 @@
 }
 
 .month-label {
-  font-size: 38rpx;
-  font-weight: 600;
+  font-size: 36rpx;
+  font-weight: 500;
   color: #0A0A0A;
 }
 
@@ -60,8 +60,7 @@
 }
 
 .day-text {
-  font-size: 34rpx;
-  color: #101828;
+  font-size: 32rpx;
 }
 
 .today .day-text {
@@ -77,6 +76,16 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.holiday-label {
+  color: #EF4444;
+  font-weight: 600;
+}
+
+.workday-label {
+  color: #2563EB;
+  font-weight: 600;
 }
 
 .today .day-label {

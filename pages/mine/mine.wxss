@@ -19,7 +19,7 @@
 .name {
   display: block;
   font-size: 34rpx;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .desc {
@@ -30,8 +30,20 @@
 .menu-item {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 22rpx 0;
   border-bottom: 1rpx solid #EEF2F7;
+}
+
+.menu-left {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.menu-desc {
+  color: #8D98AC;
+  font-size: 24rpx;
 }
 
 .menu-item:last-child {

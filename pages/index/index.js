@@ -1,5 +1,5 @@
-const { formatDate, formatMonthLabel, getMonthMatrix, getPrevMonth, getNextMonth, getHolidayAndSolarTerm } = require('../../utils/date')
-const { getDiaries, getCheckins, getDiaryByDate } = require('../../utils/storage')
+const { formatDate, formatMonthLabel, getMonthMatrix, getPrevMonth, getNextMonth, getHolidayAndSolarTerm, syncHolidayConfigByYear } = require('../../utils/date')
+const { getDiaries, getCheckins, getDiaryByDate, isDiaryMeaningful } = require('../../utils/storage')
 
 Page({
   data: {
@@ -8,6 +8,7 @@ Page({
     todayLabel: '',
     todayMMDD: '',
     todayTodoCount: 0,
+    todayHasDone: false,
     todayDiaryText: '未记录'
   },
 
@@ -15,8 +16,18 @@ Page({
     this.currentDateObj = new Date()
   },
 
-  onShow() {
+  async onShow() {
+    await this.syncHolidayData()
     this.refreshCalendar()
+  },
+
+  async syncHolidayData() {
+    const currentDateObj = this.currentDateObj || new Date()
+    const currentYear = currentDateObj.getFullYear()
+    await Promise.all([
+      syncHolidayConfigByYear(currentYear),
+      syncHolidayConfigByYear(currentYear + 1)
+    ])
   },
 
   refreshCalendar() {
@@ -32,10 +43,12 @@ Page({
       return {
         ...item,
         isToday: item.date === today,
-        hasDiary: Boolean(diaryMap[item.date]),
+        hasDiary: isDiaryMeaningful(diaryMap[item.date]),
         hasCheckin: Boolean(checkin && checkin.doneCount > 0),
         hasPending: Boolean(checkin && checkin.totalCount > checkin.doneCount),
-        dateLabel: dateLabel.label
+        dateLabel: dateLabel.label,
+        dayType: dateLabel.dayType,
+        dayTag: dateLabel.dayTag
       }
     })
     const todayCheckin = checkinMap[today]
@@ -46,7 +59,8 @@ Page({
       todayLabel: today,
       todayMMDD: today.slice(5),
       todayTodoCount: todayCheckin ? todayCheckin.totalCount : 0,
-      todayDiaryText: diaryMap[today] ? '已记录' : '未记录'
+      todayHasDone: Boolean(todayCheckin && todayCheckin.doneCount > 0),
+      todayDiaryText: isDiaryMeaningful(diaryMap[today]) ? '已记录' : '未记录'
     })
   },
 
@@ -81,6 +95,10 @@ Page({
 
   goTodayDetail() {
     wx.navigateTo({ url: `/pages/detail/detail?date=${formatDate(new Date())}&focus=1` })
+  },
+
+  goSearch() {
+    wx.navigateTo({ url: '/pages/search/search' })
   },
 
   goMine() {

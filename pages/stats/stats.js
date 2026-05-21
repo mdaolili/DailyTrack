@@ -1,4 +1,4 @@
-const { getDiaries, getCheckins, getGoals } = require('../../utils/storage')
+const { getDiaries, getCheckins, getGoals, isDiaryMeaningful } = require('../../utils/storage')
 const { formatDate } = require('../../utils/date')
 
 Page({
@@ -7,7 +7,8 @@ Page({
       continuousDays: 0,
       monthRate: 0,
       diaryCount: 0,
-      goalCount: 0
+      goalCount: 0,
+      goalCompletionRate: 0
     },
     overviewCards: [],
     heatmap: [],
@@ -30,7 +31,7 @@ Page({
     const diaries = getDiaries()
     const checkins = getCheckins()
     const goals = getGoals()
-    const diaryCount = diaries.length
+    const diaryCount = diaries.filter((item) => isDiaryMeaningful(item)).length
     const today = new Date()
     let continuousDays = 0
     const checkinMap = {}
@@ -48,7 +49,7 @@ Page({
       day.setDate(today.getDate() - i)
       const date = formatDate(day)
       const checkin = checkinMap[date]
-      const hasDiary = Boolean(diaryMap[date])
+      const hasDiary = isDiaryMeaningful(diaryMap[date])
       if ((checkin && checkin.doneCount > 0) || hasDiary) continuousDays += 1
       else break
     }
@@ -76,7 +77,7 @@ Page({
         if (rate >= 1) level = 3
         else if (rate >= 0.5) level = 2
         else if (rate > 0) level = 1
-      } else if (diaryMap[date]) {
+      } else if (isDiaryMeaningful(diaryMap[date])) {
         level = 1
       }
       heatmap.push({ date, level })
@@ -85,11 +86,12 @@ Page({
     const weeklyTrendData = this.computeWeeklyTrend(monthRecords)
     const monthlyTrendData = this.computeMonthlyTrend(checkins)
     const rankings = this.computeRankings(goals)
+    const goalCompletionRate = this.computeGoalCompletionRate(goals)
 
     const overviewCards = [
       {
         key: 'continuousDays',
-        icon: '↗',
+        iconPath: '/images/icon/stats-trend.png',
         iconClass: 'icon-orange',
         label: '连续打卡',
         value: statsToNumber(continuousDays),
@@ -97,7 +99,7 @@ Page({
       },
       {
         key: 'monthRate',
-        icon: '📅',
+        iconPath: '/images/icon/stats-calendar.png',
         iconClass: 'icon-blue',
         label: '本月完成',
         value: `${statsToNumber(monthRate)}%`,
@@ -105,7 +107,7 @@ Page({
       },
       {
         key: 'goalCount',
-        icon: '◎',
+        iconPath: '/images/icon/stats-target.png',
         iconClass: 'icon-green',
         label: '总目标数',
         value: statsToNumber(goals.length),
@@ -113,7 +115,7 @@ Page({
       },
       {
         key: 'diaryCount',
-        icon: '📖',
+        iconPath: '/images/icon/stats-diary.png',
         iconClass: 'icon-purple',
         label: '日记总数',
         value: statsToNumber(diaryCount),
@@ -122,7 +124,7 @@ Page({
     ]
 
     this.setData({
-      stats: { continuousDays, monthRate, diaryCount, goalCount: goals.length },
+      stats: { continuousDays, monthRate, diaryCount, goalCount: goals.length, goalCompletionRate },
       overviewCards,
       heatmap,
       weeklyTrend: [],
@@ -211,10 +213,33 @@ Page({
     }
   },
 
+  computeGoalCompletionRate(goals) {
+    if (!goals.length) return 0
+    const totalProgress = goals.reduce((sum, goal) => {
+      const progress = Number(goal.progress || 0)
+      const normalized = progress > 1 ? Math.min(1, progress / 100) : Math.min(1, progress)
+      return sum + Math.max(0, normalized)
+    }, 0)
+    return Math.round((totalProgress / goals.length) * 100)
+  },
+
   switchTrendMode(event) {
     const { mode } = event.currentTarget.dataset
     if (!mode || mode === this.data.trendMode) return
     this.setData({ trendMode: mode }, () => this.applyTrendMode())
+  },
+
+  onTrendTouchStart(event) {
+    this.touchStartX = event.changedTouches && event.changedTouches[0] ? event.changedTouches[0].clientX : 0
+  },
+
+  onTrendTouchEnd(event) {
+    const endX = event.changedTouches && event.changedTouches[0] ? event.changedTouches[0].clientX : 0
+    const delta = endX - (this.touchStartX || 0)
+    if (Math.abs(delta) < 40) return
+    const nextMode = delta < 0 ? 'month' : 'week'
+    if (nextMode === this.data.trendMode) return
+    this.setData({ trendMode: nextMode }, () => this.applyTrendMode())
   },
 
   applyTrendMode() {
@@ -249,8 +274,7 @@ Page({
   goGoalDetail(event) {
     const { id } = event.currentTarget.dataset
     if (!id) return
-    wx.setStorageSync('focusGoalId', id)
-    wx.switchTab({ url: '/pages/target/target' })
+    wx.navigateTo({ url: `/pages/goal-detail/goal-detail?id=${id}` })
   }
 })
 

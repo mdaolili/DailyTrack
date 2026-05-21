@@ -2,7 +2,12 @@
   "compileType": "miniprogram",
   "libVersion": "trial",
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      {
+        "value": ".history",
+        "type": "folder"
+      }
+    ],
     "include": []
   },
   "setting": {
@@ -24,5 +29,5 @@
     "tabIndent": "auto",
     "tabSize": 2
   },
-  "appid": "wx7d2493332f8fe6fc"
+  "appid": "wxc111b1399ec0d065"
 }
